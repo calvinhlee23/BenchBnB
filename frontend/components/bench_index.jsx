@@ -7,13 +7,14 @@ class BenchIndex extends React.Component {
     super(props);
     window.props = props;
   }
+
   componentDidMount() {
     this.props.requestBenches();
   }
 
   render() {
     return(
-      <ul className = "bench-index">
+      <ul id = "bench-index">
       {this.props.benches.map((bench, indx) => {
         return <BenchIndexItem key = {indx} bench = {bench}/>;
       })}
