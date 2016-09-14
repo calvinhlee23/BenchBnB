@@ -23512,13 +23512,19 @@
 	  }
 	
 	  _createClass(BenchMap, [{
+	    key: "componentDidMount",
+	    value: function componentDidMount() {
+	      var mapDOMNode = this.refs.map;
+	      var mapOptions = {
+	        center: { lat: 37.7758, lng: -122.435 }, // this is SF
+	        zoom: 13
+	      };
+	      this.map = new google.maps.Map(mapDOMNode, mapOptions);
+	    }
+	  }, {
 	    key: "render",
 	    value: function render() {
-	      return _react2.default.createElement(
-	        "div",
-	        { id: "bench-map", ref: "map" },
-	        "Map Should Be Here"
-	      );
+	      return _react2.default.createElement("div", { id: "bench-map", ref: "map" });
 	    }
 	  }]);
 	
