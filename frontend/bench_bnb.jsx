@@ -1,22 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import configureStore from './store/store';
+import RootComponent from './components/root_component';
 
-class Test extends React.Component {
-  render () {
-    return (
-      <div>Hello from Test! YAY!</div>
-    );
-  }
-}
-
+const store = configureStore();
 document.addEventListener("DOMContentLoaded", () => {
-  ReactDOM.render(<Test/>, document.getElementById("root"));
-  // test
-  const store = configureStore();
-  window.store = store;
+  ReactDOM.render(<RootComponent store = {store}/>,
+     document.getElementById("root"));
 
+  // test
 });
+window.store = store;
 
 import {requestBenches} from './actions/bench_actions';
 window.requestBenches = requestBenches;
