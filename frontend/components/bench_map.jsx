@@ -4,7 +4,6 @@ import MarkerManager from './marker_manager';
 class BenchMap extends React.Component {
   constructor (props) {
     super(props);
-    console.log(props.benches);
   }
 
   componentDidMount () {
@@ -15,12 +14,28 @@ class BenchMap extends React.Component {
     };
     this.map = new google.maps.Map(mapDOMNode, mapOptions);
     this.MarkerManager = new MarkerManager(this.map);
-    this.MarkerManager.updateMarkers(this.props.benches);
-  }
 
+    this.mapIdleUpdate();
+    this.MarkerManager.updateMarkers(this.props.benches);
+
+  }
   componentDidUpdate() {
     this.MarkerManager.updateMarkers(this.props.benches);
   }
+
+  mapIdleUpdate() {
+    this.map.addListener('idle', () => {
+      var latlngbounds = this.map.getBounds();
+      const bounds = {NorthEast: {
+        lat: latlngbounds.getNorthEast().lat(),
+        lng: latlngbounds.getNorthEast().lng()},
+        SouthWest: {
+          lat: latlngbounds.getSouthWest().lat(),
+          lng: latlngbounds.getSouthWest().lng()}
+        };
+        this.props.updateBounds(bounds);
+      });
+    }
 
   render() {
     return (

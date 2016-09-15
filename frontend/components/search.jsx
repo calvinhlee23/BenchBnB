@@ -8,14 +8,17 @@ class Search extends React.Component {
     this.props.requestBenches();
   }
 
+  componentDidUpdate() {
+    this.props.requestBenches();
+  }
+
   render() {
     return (
       <div>
         <BenchMap benches = {this.props.benches}
-                  requestBenches = {this.props.requestBenches}/>
+          updateBounds = {this.props.updateBounds}/>
 
-        <BenchIndex benches = {this.props.benches}
-                    requestBenches = {this.props.requestBenches}/>
+        <BenchIndex benches = {this.props.benches}/>
       </div>
     );
   }
