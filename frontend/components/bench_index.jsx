@@ -5,11 +5,6 @@ class BenchIndex extends React.Component {
 
   constructor(props) {
     super(props);
-    window.props = props;
-  }
-
-  componentDidMount() {
-    this.props.requestBenches();
   }
 
   render() {

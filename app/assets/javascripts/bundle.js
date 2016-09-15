@@ -23304,18 +23304,10 @@
 	  function BenchIndex(props) {
 	    _classCallCheck(this, BenchIndex);
 	
-	    var _this = _possibleConstructorReturn(this, (BenchIndex.__proto__ || Object.getPrototypeOf(BenchIndex)).call(this, props));
-	
-	    window.props = props;
-	    return _this;
+	    return _possibleConstructorReturn(this, (BenchIndex.__proto__ || Object.getPrototypeOf(BenchIndex)).call(this, props));
 	  }
 	
 	  _createClass(BenchIndex, [{
-	    key: 'componentDidMount',
-	    value: function componentDidMount() {
-	      this.props.requestBenches();
-	    }
-	  }, {
 	    key: 'render',
 	    value: function render() {
 	      return _react2.default.createElement(
@@ -23460,15 +23452,20 @@
 	  }
 	
 	  _createClass(Search, [{
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      this.props.requestBenches();
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render() {
 	      return _react2.default.createElement(
 	        'div',
 	        null,
-	        _react2.default.createElement(_bench_map2.default, null),
-	        _react2.default.createElement(_bench_index2.default, {
-	          requestBenches: this.props.requestBenches,
-	          benches: this.props.benches })
+	        _react2.default.createElement(_bench_map2.default, { benches: this.props.benches,
+	          requestBenches: this.props.requestBenches }),
+	        _react2.default.createElement(_bench_index2.default, { benches: this.props.benches,
+	          requestBenches: this.props.requestBenches })
 	      );
 	    }
 	  }]);
@@ -23482,7 +23479,7 @@
 /* 209 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
@@ -23493,6 +23490,10 @@
 	var _react = __webpack_require__(1);
 	
 	var _react2 = _interopRequireDefault(_react);
+	
+	var _marker_manager = __webpack_require__(210);
+	
+	var _marker_manager2 = _interopRequireDefault(_marker_manager);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -23505,14 +23506,17 @@
 	var BenchMap = function (_React$Component) {
 	  _inherits(BenchMap, _React$Component);
 	
-	  function BenchMap() {
+	  function BenchMap(props) {
 	    _classCallCheck(this, BenchMap);
 	
-	    return _possibleConstructorReturn(this, (BenchMap.__proto__ || Object.getPrototypeOf(BenchMap)).apply(this, arguments));
+	    var _this = _possibleConstructorReturn(this, (BenchMap.__proto__ || Object.getPrototypeOf(BenchMap)).call(this, props));
+	
+	    console.log(props.benches);
+	    return _this;
 	  }
 	
 	  _createClass(BenchMap, [{
-	    key: "componentDidMount",
+	    key: 'componentDidMount',
 	    value: function componentDidMount() {
 	      var mapDOMNode = this.refs.map;
 	      var mapOptions = {
@@ -23520,11 +23524,18 @@
 	        zoom: 13
 	      };
 	      this.map = new google.maps.Map(mapDOMNode, mapOptions);
+	      this.MarkerManager = new _marker_manager2.default(this.map);
+	      this.MarkerManager.updateMarkers(this.props.benches);
 	    }
 	  }, {
-	    key: "render",
+	    key: 'componentDidUpdate',
+	    value: function componentDidUpdate() {
+	      this.MarkerManager.updateMarkers(this.props.benches);
+	    }
+	  }, {
+	    key: 'render',
 	    value: function render() {
-	      return _react2.default.createElement("div", { id: "bench-map", ref: "map" });
+	      return _react2.default.createElement('div', { id: 'bench-map', ref: 'map' });
 	    }
 	  }]);
 	
@@ -23532,6 +23543,74 @@
 	}(_react2.default.Component);
 	
 	exports.default = BenchMap;
+
+/***/ },
+/* 210 */
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	var MarkerManager = function () {
+	  function MarkerManager(map) {
+	    _classCallCheck(this, MarkerManager);
+	
+	    this.map = map;
+	    this.markers = [];
+	  }
+	
+	  _createClass(MarkerManager, [{
+	    key: "updateMarkers",
+	    value: function updateMarkers(benches) {
+	      var _this = this;
+	
+	      if (benches.length > 0) {
+	        this._benchesToAdd(benches).forEach(function (bench) {
+	          _this._createMarkerFromBench(bench);
+	        });
+	      }
+	    }
+	  }, {
+	    key: "_benchesToAdd",
+	    value: function _benchesToAdd(benches) {
+	      var _this2 = this;
+	
+	      var arr = [];
+	      if (this.markers.length === 0) {
+	        return benches;
+	      }
+	      benches.forEach(function (bench) {
+	        if (bench.id > _this2.markers[_this2.markers.length - 1].id) {
+	          arr.push(bench);
+	        }
+	      });
+	      return arr;
+	    }
+	  }, {
+	    key: "_createMarkerFromBench",
+	    value: function _createMarkerFromBench(bench) {
+	      console.log(bench);
+	      var position = { lat: bench.lat, lng: bench.lng };
+	      var marker = new google.maps.Marker({
+	        position: position,
+	        id: bench.id
+	      });
+	      marker.setMap(this.map);
+	      this.markers.push(marker);
+	    }
+	  }]);
+	
+	  return MarkerManager;
+	}();
+	
+	exports.default = MarkerManager;
 
 /***/ }
 /******/ ]);
