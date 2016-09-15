@@ -8,10 +8,6 @@ class Search extends React.Component {
     this.props.requestBenches();
   }
 
-  componentDidUpdate() {
-    this.props.requestBenches();
-  }
-
   render() {
     return (
       <div>

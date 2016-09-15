@@ -25861,6 +25861,8 @@
 	
 	var _bench_api_util = __webpack_require__(303);
 	
+	var _filter_actions = __webpack_require__(192);
+	
 	var BenchesMiddleware = function BenchesMiddleware(_ref) {
 	  var getState = _ref.getState;
 	  var dispatch = _ref.dispatch;
@@ -25874,6 +25876,10 @@
 	          };
 	          (0, _bench_api_util.fetchBenches)(filters, success);
 	          return next(action);
+	        case _filter_actions.FilterConstants.UPDATE_BOUNDS:
+	          next(action);
+	          dispatch((0, _bench_actions.requestBenches)());
+	          break;
 	        default:
 	          return next(action);
 	      }
@@ -26735,11 +26741,6 @@
 	  _createClass(Search, [{
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
-	      this.props.requestBenches();
-	    }
-	  }, {
-	    key: 'componentDidUpdate',
-	    value: function componentDidUpdate() {
 	      this.props.requestBenches();
 	    }
 	  }, {
